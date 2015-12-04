@@ -1,0 +1,6 @@
+package Input;
+class InputCommands
+{
+	
+	
+}
