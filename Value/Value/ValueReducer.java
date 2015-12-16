@@ -17,13 +17,20 @@ public class ValueReducer extends Thread
 			  if(!ReduceTarget.Reduced)
 		  	  {
 				  ReduceTarget.Reducing = true;
-				  ReduceTarget.Reduce();
+				  Value eax = ReduceTarget.reducer.Reduce(ReduceTarget);
+				  while(ReduceTarget.Running){}
+				  ReduceTarget.Denominator = new LargeNumber(eax.Denominator);
+				  ReduceTarget.Molecule = new LargeNumber(eax.Molecule);
 				  ReduceTarget.Reduced = true;
 				  ReduceTarget.Reducing = false;
 		  	  }
-			  
-			  Thread.yield();
+			  else
+			  {
+				  System.gc();
+				  Thread.yield();
+			  }
 		  }
+		  System.gc();
 	 }
 	
 	

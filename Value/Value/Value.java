@@ -16,6 +16,7 @@ public class Value{
 	public Value(String number)
 	{
 		Thread t = new ValueReducer(this);
+		t.setPriority(Thread.MIN_PRIORITY);
 		t.start();
 		reducer = new Reducer();
 		int commaIndex = number.indexOf(".");
@@ -31,12 +32,20 @@ public class Value{
 	}
 	public Value(Value a)
 	{
-		reducer = new Reducer();Denominator = new LargeNumber(a.Denominator);Molecule = new LargeNumber(a.Molecule);
+		reducer = new Reducer();
+		Denominator = new LargeNumber(a.Denominator);
+		Molecule = new LargeNumber(a.Molecule);
+		Thread t = new ValueReducer(this);
+		t.setPriority(Thread.MIN_PRIORITY);
+		t.start();
 	}
 	public Value(LargeNumber demoninator,LargeNumber molecule)
 	{
 		Denominator = new LargeNumber(demoninator);
 		Molecule = new LargeNumber(molecule);
+		Thread t = new ValueReducer(this);
+		t.setPriority(Thread.MIN_PRIORITY);
+		t.start();
 	}
 	
 	public void Reduce()
