@@ -71,7 +71,7 @@ public class ResolveCommand
 					);
 		}
 	}
-	static int[] GetPairIndex(String data)
+	public static int[] GetPairIndex(String data)
 	{
 		int[] ret = new int[2];ret[0] = -1;ret[1] = -1;
 		

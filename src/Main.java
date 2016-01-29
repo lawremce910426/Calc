@@ -2,6 +2,8 @@ import Formula.Formula;
 import Function.Function;
 import Input.Input;
 import Input.Input.ChangeLineCode;
+import Merger.Distributive;
+import Merger.MulDivAdaptMgr;
 import NumberCalculating.NumberCalculating;
 import ResolveCommand.ResolveCommand;
 import Value.Value;
@@ -13,8 +15,12 @@ import Value.Value;
 public class Main {
  
 	public static void main(String[] args)  { 
+		//------unit test prepare area--------------------------
+		Distributive a = new Distributive();
+		System.out.print(a.DoDistributive("x * 3 + 3"));
+		//------------------------------------------------------
 		
-		try
+		/*try
 		{
 			//PrepareEffects();
 		}
@@ -30,42 +36,44 @@ public class Main {
 				Output.Output.WriteLine("Select type of service(\'formula\' or \'calc\') >"); 
 				String eax = input.GetLine();
 				if(eax.equals("formula"))
-				{
-					Output.Output.WriteLine("Enter your calculate function/equation >"); 
-					String ebx = input.GetLine();
-					Function calc = new Function(ebx);
-					if(!calc.issingle){
-						Value[] ValueList = new Value[calc.UnknownList.length];
-						for(int i = 0;i != calc.UnknownList.length;i++)
-						{
-							Output.Output.WriteLine("Enter the value of the unknown number \'" + calc.UnknownList[i] + "\' >");
-							Value number = new Value(input.GetLine());
-							ValueList[i] = number;
+					while(true){
+						Output.Output.WriteLine("If you want to use other service,please enter 'exit'.\n");
+						Output.Output.WriteLine("Enter your calculate function/equation >"); 
+						String ebx = input.GetLine();
+						if(ebx == "exit")break;
+						Function calc = new Function(ebx);
+						if(!calc.issingle){
+							Value[] ValueList = new Value[calc.UnknownList.length];
+							for(int i = 0;i != calc.UnknownList.length;i++)
+							{
+								Output.Output.WriteLine("Enter the value of the unknown number \'" + calc.UnknownList[i] + "\' >");
+								Value number = new Value(input.GetLine());
+								ValueList[i] = number;
+							}
+							Output.Output.WriteLine("The result is:\t");
+							Output.Output.WriteLine(calc.PutIn(ValueList) + "\n");
 						}
-						Output.Output.WriteLine("The result is:\t");
-						Output.Output.WriteLine(calc.PutIn(ValueList) + "\n");
+						else
+						{
+							Output.Output.WriteLine("Enter the value of the unknown number >");
+							Value number = new Value(input.GetLine());
+							Output.Output.WriteLine(calc.PutIn(number) + "\n");
+						}
 					}
-					else
-					{
-						Output.Output.WriteLine("Enter the value of the unknown number >");
-						Value number = new Value(input.GetLine());
-						Output.Output.WriteLine(calc.PutIn(number) + "\n");
-					}
-						
-					
-				}
 				if(eax.equals("calc"))
-				{
-					Output.Output.WriteLine("Enter your calculate formula >"); 
-					String ebx = input.GetLine();
-					NumberCalculating calc = new NumberCalculating();
-					Output.Output.WriteLine("The result is:\t");
-					Output.Output.WriteLine(calc.GetResult(ebx) + "\n");
-				}
+					while(true){
+						Output.Output.WriteLine("If you want to use other service,please enter 'exit'.\n");
+						Output.Output.WriteLine("Enter your calculate formula >"); 
+						String ebx = input.GetLine();
+						if(ebx == "exit")break;
+						NumberCalculating calc = new NumberCalculating();
+						Output.Output.WriteLine("The result is:\t");
+						Output.Output.WriteLine(calc.GetResult(ebx) + "\n");
+					}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 	}
 	
 	

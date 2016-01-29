@@ -3,19 +3,15 @@ package NumberCalculating;
 import Formula.Formula;
 import ResolveCommand.ResolveCommand;
 import Value.Value;
-import Value.ValueReducer;
 
 public class NumberCalculating {
 	public NumberCalculating(){}
 	public Value GetResult(String Input) throws Exception
 	{
-		ValueReducer.KillThread = false;
 		Formula formula = ResolveCommand.ToFormula(Input);
 		formula = DeleteData(formula);
 		CalculateFormula.CalculateFormula Calc = new CalculateFormula.CalculateFormula();
 		Value eax = Calc.CalculateValue(formula);
-		while(!eax.Reduced){}
-		ValueReducer.KillThread = true;
 		return eax;
 	}
 	Formula DeleteData(Formula data) throws Exception

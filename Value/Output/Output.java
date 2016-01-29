@@ -22,7 +22,6 @@ public class Output
 	}
 	public static void WriteLine(Value s)
 	{
-		while(!s.Reduced){}
 		System.out.print(s.Denominator.toString() + " / " + s.Molecule.toString());
 	}
 	public static void Write(String s)

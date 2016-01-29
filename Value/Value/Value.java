@@ -4,20 +4,12 @@ public class Value{
 	public LargeNumber Denominator;//the one down
 	public LargeNumber Molecule;//the one up
 	Reducer reducer;
-	ValueReducer MultiThreadReducer;
-	//-----------------------------multithread lock---------------------------
-	boolean Running;
-	boolean Reducing;
-	//------------------------------------------------------------------------
-	public boolean Reduced = true;
-	//-----------------------------is thrown----------------------------------
-	boolean notthrown = true;
-	//------------------------------------------------------------------------
+	public boolean Positive = true;
+	PositiveManager positiveMgr;
+	
 	public Value(String number)
 	{
-		Thread t = new ValueReducer(this);
-		t.setPriority(Thread.MIN_PRIORITY);
-		t.start();
+		positiveMgr = new PositiveManager();
 		reducer = new Reducer();
 		int commaIndex = number.indexOf(".");
 		if(commaIndex == -1)
@@ -32,23 +24,29 @@ public class Value{
 	}
 	public Value(Value a)
 	{
+		positiveMgr = new PositiveManager();
+		Positive = a.Positive;
 		reducer = new Reducer();
 		Denominator = new LargeNumber(a.Denominator);
 		Molecule = new LargeNumber(a.Molecule);
-		Thread t = new ValueReducer(this);
-		t.setPriority(Thread.MIN_PRIORITY);
-		t.start();
 	}
 	public Value(LargeNumber demoninator,LargeNumber molecule)
 	{
+		positiveMgr = new PositiveManager();
 		Denominator = new LargeNumber(demoninator);
 		Molecule = new LargeNumber(molecule);
-		Thread t = new ValueReducer(this);
-		t.setPriority(Thread.MIN_PRIORITY);
-		t.start();
 	}
 	
-	public void Reduce()
+	public void NotForceReduce()
+	{
+		if(this.Denominator.Bigger(new LargeNumber(100)) || this.Molecule.Bigger(new LargeNumber(100)))
+		{
+			Value eax = reducer.Reduce(this);
+			Denominator = eax.Denominator;
+			Molecule = eax.Molecule;
+		}
+	}
+	public void ForceReduce()
 	{
 		Value eax = reducer.Reduce(this);
 		Denominator = eax.Denominator;
@@ -57,21 +55,35 @@ public class Value{
 	
 	public Value ADD(Value a)
 	{
-		while(Reducing){}
-		Running = true;
+		return positiveMgr.ADD(this, a);
+	}
+	public Value SUB(Value a)
+	{
+		return positiveMgr.SUB(this ,a);
+	}
+	public Value MUL(Value a)
+	{
+		return positiveMgr.MUL(this, a);
+	}
+	public Value DIV(Value a)
+	{
+		return positiveMgr.DIV(this ,a);
+	}
+	
+	
+	
+	public Value Add(Value a)
+	{
 		LargeNumber Molecule_cpy = new LargeNumber(Molecule);
 		Molecule = Molecule.Mul(a.Molecule);
 		Denominator = Denominator.Mul(a.Molecule);
 		a.Denominator = a.Denominator.Mul(Molecule_cpy);
 		Denominator.Add(a.Denominator);
-		Running = false;
-		Reduced = false;
+		NotForceReduce();
 		return this;
 	}
-	public Value SUB(Value a)//this - a.
+	public Value Sub(Value a)//this - a.
 	{
-		while(Reducing){}
-		Running = true;
 		if(a.Equals(this)){
 			Denominator = new LargeNumber(0);
 			Molecule = new LargeNumber(1);
@@ -82,44 +94,56 @@ public class Value{
 		Denominator = Denominator.Mul(a.Molecule);
 		a.Denominator = a.Denominator.Mul(Molecule_cpy);
 		Denominator.Sub(a.Denominator);
-		Running = false;
-		Reduced = false;
+		NotForceReduce();
 		return this;
 	}
-	public Value MUL(Value a)
+	public Value Mul(Value a)
 	{
-		while(Reducing){}
-		Running = true;
 		Denominator = Denominator.Mul(a.Denominator);
 		Molecule = Molecule.Mul(a.Molecule);
-		Running = false;
-		Reduced = false;
+		NotForceReduce();
 		return this;
 	}
-	public Value DIV(Value a)//this / a.Decimal and leftovers would still be stored.
+	public Value Div(Value a)//this / a.Decimal and leftovers would still be stored.
 	{
-		while(Reducing){}
-		Running = true;
 		Denominator = Denominator.Mul(a.Molecule);
 		Molecule = Molecule.Mul(a.Denominator);
-		Running = false;
-		Reduced = false;
+		NotForceReduce();
 		return this;
+	}
+	
+	
+	
+	
+	public boolean Bigger(Value a)
+	{
+		LargeNumber thisBuf = new LargeNumber(this.Denominator);
+		LargeNumber aBuf = new LargeNumber(a.Denominator);
+		thisBuf = thisBuf.Mul(a.Molecule);
+		aBuf = aBuf.Mul(Molecule);
+		if(thisBuf.Equals(aBuf))return false;
+		return thisBuf.Bigger(aBuf);
+	}
+	public boolean Smaller(Value a)
+	{
+		if(a.Equals(this))return false;
+		return !Bigger(a);
 	}
 	public boolean Equals(Value a)
 	{
-		Reduce();
-		a.Reduce();
+		ForceReduce();
+		a.ForceReduce();
 		return (a.Denominator == Denominator && a.Molecule == Molecule ? true : false);
 	}
 	public int toInt()
 	{
+		NotForceReduce();
 		return Denominator.toInt() / Molecule.toInt();
 	}
 	@Override
 	public String toString()
 	{
-		while(!Reduced){}
-		return Denominator.toString() + " / " + Molecule.toString();
+		ForceReduce();
+		return (Positive ? "" : "- ") + Denominator.toString() + " / " + Molecule.toString();
 	}
 }

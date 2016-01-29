@@ -22,7 +22,7 @@ class LargeNumber_SubManager
 				} catch (Exception e) {
 					Borrow(Big ,i + 1);
 					try {
-						Big.data[i] = new Number_10(9).Sub(Small.data[i].Sub(new Number_10(1)));
+						Big.data[i] = new Number_10(9).Sub(Small.data[i].Sub(new Number_10(1))).Add(Big.data[i]);
 						//9 - (x - 1) = 10 -x
 					} catch (Exception ee) {
 						ee.printStackTrace();
