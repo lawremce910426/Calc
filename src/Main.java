@@ -3,7 +3,8 @@ import Function.Function;
 import Input.Input;
 import Input.Input.ChangeLineCode;
 import Merger.Distributive;
-import Merger.MulDivAdaptMgr;
+import Merger.MulDivAdapt.EncryptDecrypt;
+import Merger.MulDivAdapt.MulDivAdaptMgr;
 import NumberCalculating.NumberCalculating;
 import ResolveCommand.ResolveCommand;
 import Value.Value;
@@ -17,7 +18,7 @@ public class Main {
 	public static void main(String[] args)  { 
 		//------unit test prepare area--------------------------
 		Distributive a = new Distributive();
-		System.out.print(a.DoDistributive("x * 3 + 3"));
+		System.out.print(a.DoDistributive("x * 3 + x * 9 + 3"));
 		//------------------------------------------------------
 		
 		/*try
