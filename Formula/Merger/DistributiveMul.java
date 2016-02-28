@@ -33,18 +33,31 @@ public class DistributiveMul
 	{
 		Pair[] pair = ToPairs(Input);//only the first bracket.
 		int[] idx = ResolveCommand.GetPairIndex(Input); //only detect the first bracket
-		char symbol = Input.substring(idx[1] + 2 ,idx[1] + 3).charAt(0);
-		String data = Input.substring(idx[1] + 4);
-		String ret = OneToMul(pair[0].data + " " + symbol + " " + data);
-		for(int i = 1;i != pair.length;i++)
+		char symbol = (idx[1] == Input.length() - 1
+				?Input.charAt(new DistributiveTwo().FirstOperatorIdx(Input, 0))
+				:Input.substring(idx[1] + 2 ,idx[1] + 3).charAt(0));
+				
+		
+		String data = (idx[1] == Input.length() - 1
+				?Input.substring(0 ,new DistributiveTwo().FirstOperatorIdx(Input, 0) - 1)
+				:Input.substring(idx[1] + 4));
+		
+		String ret = "";
+		if(!HasBrackets(data)){
+			ret = pair[0].data + " " + symbol + " " + data;
+			for(int i = 1;i != pair.length;i++)
+						ret += " " + pair[i].symbol + " " + pair[i].data + " " + symbol 
+								+ " " + data;
+		}
+		else{
+			ret = OneToMul(pair[0].data + " " + symbol + " " + data);
+			for(int i = 1;i != pair.length;i++)
 					ret += " " + pair[i].symbol + " " + OneToMul(pair[i].data + " " + symbol 
 							+ " " + data);
+		}
 		return ret;
 	}
-	/*public String MultipleBracket(String input)
-	{
-		
-	}*/
+	public boolean HasBrackets(String a){try{ResolveCommand.GetPairIndex(a);return true;}catch(Exception e){return false;}}
 	Pair[] ToPairs(String Input)
 	{
 		int[] idx = ResolveCommand.GetPairIndex(Input); 

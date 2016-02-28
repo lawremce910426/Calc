@@ -1,9 +1,10 @@
-package Merger;
+package Merger.MulDivAdapt;
 
+import Merger.DistributiveMul;
 
 public class MulDivAdaptMgr {
 	static int UsingTo = 0;//naming rule:adapt0 ,adapt1 ,adapt2
-	public static String[] FirstItem(String data)
+	public static String[] FirstItem(String data)throws Exception
 		//first one is the item.second one is the leftovers.third one is the idx to insert adapted.
 	{
 		int[] idx = FirstItemIdx(data);
@@ -15,8 +16,9 @@ public class MulDivAdaptMgr {
 		ret[2] = String.valueOf(idx[0]);
 		return ret;
 	}
-	static int[] FirstItemIdx(String data)//no brackets allowed
+	static int[] FirstItemIdx(String data)throws Exception//no brackets allowed
 	{
+		if(new DistributiveMul().HasBrackets(data))throw new Exception();
 		int[] ret = new int[2];ret[0] = -1;ret[1] = -1;
 		for(int i = 0;i != data.length();i++)
 		{

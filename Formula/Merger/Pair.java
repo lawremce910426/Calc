@@ -1,8 +1,8 @@
 package Merger;
 
-class Pair {
-	String data;
-	char symbol;
+public class Pair {
+	public String data;
+    public char symbol;
 	public Pair(char symbol,String data)
 	{
 		this.data = data;

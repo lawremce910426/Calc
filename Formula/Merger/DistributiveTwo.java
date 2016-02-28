@@ -38,7 +38,7 @@ public class DistributiveTwo {
 			return "";
 		}
 	}
-	int FirstOperatorIdx(String data,int begin)
+	public int FirstOperatorIdx(String data,int begin)
 	{
 		for(int i = begin;i != data.length();i++)
 			if(isOperator(data.charAt(i)))
