@@ -1,24 +1,24 @@
-package Value;
+package LargeNumber;
+
+import Value.Number_10;
 
 public class LargeNumber
 {
 	Number_10[] data;
 	LargeNumber_AddManager AddMgr;
 	LargeNumber_SubManager SubMgr;
+	LargeNumber_MulManager MulMgr;
+	LargeNumber_DivManager DivMgr;
 	LargeNumber_CompareManager CmpMgr;
 	public LargeNumber(LargeNumber n)
 	{
-		AddMgr = new LargeNumber_AddManager();
-		CmpMgr = new LargeNumber_CompareManager();
-		SubMgr = new LargeNumber_SubManager(this);
+		Init();
 		data = new Number_10[n.data.length];
 		for(int i = 0;i != n.data.length;i++)data[i] = n.data[i].clone();
 	}
 	public LargeNumber(int num)
 	{
-		AddMgr = new LargeNumber_AddManager();
-		CmpMgr = new LargeNumber_CompareManager();
-		SubMgr = new LargeNumber_SubManager(this);
+		Init();
 		data = new Number_10[GetDigit(num)];
 		if(num == 0)
 		{
@@ -47,9 +47,7 @@ public class LargeNumber
 	}
 	public LargeNumber(String num)
 	{
-		AddMgr = new LargeNumber_AddManager();
-		CmpMgr = new LargeNumber_CompareManager();
-		SubMgr = new LargeNumber_SubManager(this);
+		Init();
 		data = new Number_10[num.toCharArray().length];
 		char[] numArr = num.toCharArray();
 		for(int i = 0;i != data.length;i++)
@@ -61,6 +59,19 @@ public class LargeNumber
 			}
 		}
 	}
+	public LargeNumber(Number_10[] newData) {
+		Init();
+		data = newData.clone();
+	}
+	void Init()
+	{
+		AddMgr = new LargeNumber_AddManager();
+		CmpMgr = new LargeNumber_CompareManager();
+		SubMgr = new LargeNumber_SubManager(this);
+		MulMgr = new LargeNumber_MulManager();
+		DivMgr = new LargeNumber_DivManager();
+	}
+
 	int GetDigit(int n)
 	{
 		for(int i = 0;;i++)
@@ -76,38 +87,16 @@ public class LargeNumber
 	
 	public void Sub(LargeNumber n){SubMgr.Sub(n);}
 	
-	public LargeNumber Mul(LargeNumber n)
-	{
-		LargeNumber Big = new LargeNumber(0);
-			Big = new LargeNumber(Bigger(n) ? n : this);
-		LargeNumber Small = new LargeNumber(0);
-			Small = new LargeNumber(Bigger(n) ? this : n);
-		LargeNumber FirstNum = new LargeNumber(0);
-			FirstNum = new LargeNumber(Big);
-		Big = new LargeNumber(0);
-		while(!Small.Equals(new LargeNumber(0)))
-		{
-			Small.Sub(new LargeNumber(1));
-			Big.Add(FirstNum);
-		}
-		return Big;
-	}
+	public LargeNumber Mul(LargeNumber n){return MulMgr.Multiple(this, n);}
 	 
-	public static LargeNumber Div(LargeNumber a ,LargeNumber b)//a / b , decimal and leftovers will be ignored.
-	{
-		LargeNumber test = new LargeNumber(0);
-		LargeNumber times = new LargeNumber(0);
-		while(a.Bigger(test))
-		{
-			test.Add(b);
-			times.Add(new LargeNumber(1));
-		}
-		if(!a.Equals(test))times.Sub(new LargeNumber(1));
-		return times;
-	}
+	public LargeNumber Div(LargeNumber a ,LargeNumber b)//a / b , decimal and leftovers will be ignored.
+	{	return DivMgr.Divide(a ,b);	}
 	
-	public static LargeNumber Mod(LargeNumber a,LargeNumber b)//a % b
+	public LargeNumber Mod(LargeNumber a,LargeNumber b)//a % b
 	{
+		if(a.Smaller(b)) return new LargeNumber(a);
+		if(a.Equals(b)) return new LargeNumber(0);
+		
 		LargeNumber eax = Div(a, b);
 		LargeNumber ebx = new LargeNumber(a);
 		ebx.Sub(eax.Mul(b));
@@ -124,6 +113,29 @@ public class LargeNumber
 		}
 		return a;
 	}
+	
+	public LargeNumber AddZeros(LargeNumber a ,int HowMuch)
+	{
+		LargeNumber ret = new LargeNumber(a);
+		try {
+			for(int i = 0;i != HowMuch;i++)
+				ret = TimesTen(ret);
+		} catch (Exception e) {
+			e.printStackTrace();	//impossible code. unless out of memory.
+		}
+		return ret;
+	}
+	
+	public LargeNumber TimesTen(LargeNumber a) throws Exception
+	{
+		Number_10[] data = a.data;
+		Number_10[] NewData = new Number_10[data.length + 1];
+		NewData[0] = new Number_10(0);
+		for(int i = 1;i != NewData.length;i++)
+			NewData[i] = data[i - 1].clone();
+		return new LargeNumber(NewData);
+	}
+
 	public int toInt()
 	{
 		int eax = 0;
@@ -138,5 +150,20 @@ public class LargeNumber
 			eax += String.valueOf(data[i].Get());
 		}
 		return eax;
+	}
+	
+	public void CleanUpJunk()
+	{
+		int RealLength = data.length;
+		for(int i = data.length - 1;i != -1 ;i--)
+		{
+			if(data[i].Get() == 0)RealLength--;
+			else break;
+		}
+		
+		Number_10[] useful_data = new Number_10[RealLength];
+		for(int i = 0;i != useful_data.length;i++)
+			useful_data[i] = data[i];
+		data = useful_data.clone();
 	}
 }

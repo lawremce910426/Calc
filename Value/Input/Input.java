@@ -19,7 +19,7 @@ public class Input
 	}
 	public String GetLine()
 	{
-		get = new GetMsg(128);
+		get = new GetMsg(1048576);	//1M size of text
 		translate = new TranslateMsg(get.Get());
 		translate.Translate(ChangeWay);
 		return CharArrayToString.ToString(translate.GetMsg());

@@ -2,7 +2,6 @@ package Merger;
 
 import Merger.MulDivAdapt.EncryptDecrypt;
 import Merger.MulDivAdapt.KeysAndString;
-import Merger.MulDivAdapt.MulDivAdaptMgr;
 import Merger.MulDivAdapt.MulDivAdaptTable;
 
 public class Distributive

@@ -1,4 +1,6 @@
-package Value;
+package LargeNumber;
+
+import Value.Number_10;
 
 class LargeNumber_SubManager
 {
@@ -13,8 +15,8 @@ class LargeNumber_SubManager
 			try {Father.data[0] = new Number_10(0);} catch (Exception e) {e.printStackTrace();}
 			return;
 		}
-		LargeNumber Big = (Father.Bigger(n) ? Father : n);
-		LargeNumber Small = (Father.Bigger(n) ? n : Father);
+		LargeNumber Big = (Father.Bigger(n) ? Father : n).Mul(new LargeNumber(1));
+		LargeNumber Small = (Father.Bigger(n) ? n : Father).Mul(new LargeNumber(1));
 		for(int i = 0;i != Small.data.length;i++)
 		{
 				try {

@@ -1,6 +1,6 @@
 package Value;
 
-class Number_10 implements Cloneable
+public class Number_10 implements Cloneable
 {
 	boolean[] data;
 	public Number_10(int num) throws Exception//num can only be number between 0~9

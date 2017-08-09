@@ -1,5 +1,7 @@
 package Value;
 
+import LargeNumber.LargeNumber;
+
 public class Value{
 	public LargeNumber Denominator;//the one down
 	public LargeNumber Molecule;//the one up
